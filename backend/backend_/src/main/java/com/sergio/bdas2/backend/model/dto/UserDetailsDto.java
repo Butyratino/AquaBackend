@@ -23,6 +23,14 @@ public class UserDetailsDto {
         this.username = username;
     }
 
+    public UserDetailsDto(Integer userId, String username, String role, String avatar) {
+        this.userId = userId;
+        this.username = username;
+        this.role = role;
+        // Convert the avatar URL to byte[]
+        this.avatar = (avatar != null) ? avatar.getBytes() : null;
+    }
+
     public static RowMapper<UserDetailsDto> getUserDetailsDtoMapper() {
         return (rs, rowNum) -> {
             UserDetailsDto user = new UserDetailsDto();

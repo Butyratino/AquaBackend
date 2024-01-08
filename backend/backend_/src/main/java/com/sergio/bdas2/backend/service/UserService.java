@@ -70,16 +70,15 @@ public class UserService {
     }
 
     public String getUserAvatarUrl(Integer userId) {
-        Optional<User> userOptional = userDao.getUserById(userId);
+        return userDao.getUserAvatarUrl(userId);
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            return user.getAvatarUrl();
-        } else {
-            // Handle case when user is not found
-            throw new RuntimeException("User not found with ID: " + userId);
-        }
+
     }
+
+    public byte[] getUserAvatarData(Integer userId) {
+        return userDao.getUserAvatarData(userId);
+    }
+
 
 //    public ResponseEntity<UserDetailsDto> getUserDetailsById(Integer userId) {
 //        return userDao.getUserDetailsById(username);

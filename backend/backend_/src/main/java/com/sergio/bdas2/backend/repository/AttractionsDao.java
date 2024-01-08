@@ -28,16 +28,20 @@ public class AttractionsDao {
     private final JdbcTemplate jdbcTemplate;
 
     public void addAttraction(AttractionsDto attraction) {
-        String query = "{CALL add_attraction(?, ?, ?, ?, ?)}";
-        jdbcTemplate.update(
-                query,
-                attraction.getName(),
-                attraction.getColor(),
-                attraction.getLength(),
-                attraction.getMinAge(),
-                attraction.getSectionId()
-        );
+        System.out.println("Name: " + attraction.getName());
+        System.out.println("Color: " + attraction.getColor());
+        System.out.println("Length: " + attraction.getLength());
+        System.out.println("Min Age: " + attraction.getMinAge());
+        System.out.println("Section ID: " + attraction.getSectionId());
+
+        // Set sectionid to 1 if it's null
+        Integer sectionId = (attraction.getSectionId() != null) ? attraction.getSectionId() : 1;
+
+        String query = "INSERT INTO attractions (name, color, length, minage, sectionid) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(query, attraction.getName(), attraction.getColor(), attraction.getLength(),
+                attraction.getMinAge(), sectionId);
     }
+
 
 
     public List<AttractionsDto> getAllAttractions() {
@@ -57,14 +61,29 @@ public class AttractionsDao {
     }
 
     public void updateAttraction(Integer attractionId, AttractionsDto attraction) {
-        String sql = "{CALL update_attraction(?, ?, ?, ?, ?, ?)}";
-        jdbcTemplate.update(sql, attractionId, attraction.getColor(), attraction.getLength(), attraction.getMinAge(), attraction.getSectionId(), attraction.getName());
+        System.out.println("Attraction ID: " + attraction.getAttractionId());
+        System.out.println("Color: " + attraction.getColor());
+        System.out.println("Length: " + attraction.getLength());
+        System.out.println("Min Age: " + attraction.getMinAge());
+        System.out.println("Section ID: " + attraction.getSectionId());
+        System.out.println("Name: " + attraction.getName());
+
+        // Set sectionid to 1 if it's null
+        Integer sectionId = (attraction.getSectionId() != null) ? attraction.getSectionId() : 1;
+
+        String sql = "UPDATE attractions " +
+                "SET name = ?, color = ?, length = ?, minage = ?, sectionid = ? " +
+                "WHERE attractionid = ?";
+        jdbcTemplate.update(sql, attraction.getName(), attraction.getColor(), attraction.getLength(),
+                attraction.getMinAge(), sectionId, attractionId);
     }
 
+
     public void deleteAttraction(Integer attractionId) {
-        String query = "{CALL DeleteAttraction(?)}";
+        String query = "DELETE FROM attractions WHERE attractionid = ?";
         jdbcTemplate.update(query, attractionId);
     }
+
 
     public Double calculateAvgSalary(Integer attractionId) {
         SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)

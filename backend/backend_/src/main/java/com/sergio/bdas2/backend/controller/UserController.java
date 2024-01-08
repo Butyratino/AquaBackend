@@ -7,6 +7,7 @@ import com.sergio.bdas2.backend.model.dto.UserDto;
 import com.sergio.bdas2.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,16 +60,18 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/{id}/avatar")
-    public ResponseEntity<String> getUserAvatar(@PathVariable("id") Integer userId) {
+    @GetMapping("/{id}/avatar")
+    public ResponseEntity<byte[]> getUserAvatar(@PathVariable("id") Integer userId) {
         try {
-            // Retrieve the user avatar URL from the database or storage
-            String avatarUrl = userService.getUserAvatarUrl(userId);
-            return new ResponseEntity<>(avatarUrl, HttpStatus.OK);
+            System.out.println("getUserAvatar func was called !!!");
+            // Retrieve the user avatar as a byte array from the database or storage
+            byte[] avatarData = userService.getUserAvatarData(userId);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(avatarData);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error fetching avatar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 //    @PostMapping("/img/{id}")

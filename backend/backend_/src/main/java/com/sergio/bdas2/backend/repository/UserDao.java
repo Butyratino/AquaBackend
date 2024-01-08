@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,5 +126,24 @@ public class UserDao {
     }
 
 
+    public String getUserAvatarUrl(Integer userId) {
+        System.out.println("DAO getUserAvatarUrl was cococolled!");
+        String query = "SELECT AVATAR FROM USERS WHERE USERID = ?";
+        List<byte[]> avatarBytesList = jdbcTemplate.query(query, new Object[]{userId}, (rs, rowNum) -> rs.getBytes("AVATAR"));
+
+        if (!avatarBytesList.isEmpty()) {
+            // Convert the byte array to a Base64-encoded string if needed
+            return Base64.getEncoder().encodeToString(avatarBytesList.get(0));
+        } else {
+            // Handle case when user is not found or avatar is null
+            return null; // Or throw an exception if you prefer
+        }
+    }
+
+    public byte[] getUserAvatarData(Integer userId) {
+        System.out.println("DAO getUserAvatarData was called!");
+        String query = "SELECT AVATAR FROM USERS WHERE USERID = ?";
+        return jdbcTemplate.queryForObject(query, new Object[]{userId}, byte[].class);
+    }
 
 }

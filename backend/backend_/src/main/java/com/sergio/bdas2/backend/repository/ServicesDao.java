@@ -28,8 +28,7 @@ public class ServicesDao {
     }
 
     public void addService(ServicesDto service) {
-
-        String query = "{CALL AddService(?, ?, ?, ?)}";
+        String query = "INSERT INTO additionalservices (sectionid, price, description, capacity) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(
                 query,
                 service.getSectionId(),
@@ -40,13 +39,13 @@ public class ServicesDao {
     }
 
     public void updateService(Integer id, ServicesDto service) {
-        String sql = "{CALL UpdateService(?, ?, ?, ?, ?)}";
-        jdbcTemplate.update(sql, id, service.getSectionId(), service.getPrice(), service.getDescription(), service.getCapacity());
+        String sql = "UPDATE additionalservices SET sectionid = ?, price = ?, description = ?, capacity = ? WHERE serviceid = ?";
+        jdbcTemplate.update(sql, service.getSectionId(), service.getPrice(), service.getDescription(), service.getCapacity(), id);
     }
-
 
     public void deleteService(Integer serviceId) {
-        String query = "{CALL DeleteService(?)}";
+        String query = "DELETE FROM additionalservices WHERE serviceid = ?";
         jdbcTemplate.update(query, serviceId);
     }
+
 }

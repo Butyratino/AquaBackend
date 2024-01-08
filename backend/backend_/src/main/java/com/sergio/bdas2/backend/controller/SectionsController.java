@@ -2,6 +2,7 @@
 package com.sergio.bdas2.backend.controller;
 
 import com.sergio.bdas2.backend.model.dto.SectionsDto;
+import com.sergio.bdas2.backend.model.entity.SectionAddressDistrictView;
 import com.sergio.bdas2.backend.service.SectionsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ public class SectionsController {
     }
 
     @GetMapping("/all")
-    public List<SectionsDto> getAllSections() {
-        List<SectionsDto> sections = sectionsService.getAllSections();
+    public List<SectionAddressDistrictView> getAllSections() {
+        List<SectionAddressDistrictView> sections = sectionsService.getAllSections();
         return sections;
     }
 
@@ -60,6 +61,8 @@ public class SectionsController {
         sectionsService.deleteSection(sectionId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
 
 
 }

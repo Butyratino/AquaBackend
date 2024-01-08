@@ -60,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String PAYMENTS_ENDPOINT = "/api/payments/**";
     private static final String EMPLOYEES_ENDPOINT = "/api/employees/**";
     private static final String SCHEDULES_ENDPOINT = "/api/schedules/**";
+    private static final String AQUAPARK_ENDPOINT = "/api/aquapark/**";
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -88,6 +89,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PAYMENTS_ENDPOINT).permitAll()
                 .antMatchers(EMPLOYEES_ENDPOINT).permitAll()
                 .antMatchers(SCHEDULES_ENDPOINT).permitAll()
+                .antMatchers(AQUAPARK_ENDPOINT).permitAll()
+                .antMatchers("/api/profile/users/*/avatar").permitAll()
                 .antMatchers(ADMIN_ENDPOINT).hasRole("admin") // todo: check User implements UserDetails
                 .anyRequest().authenticated();
 

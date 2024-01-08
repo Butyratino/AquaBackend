@@ -2,6 +2,7 @@
 package com.sergio.bdas2.backend.service;
 
 import com.sergio.bdas2.backend.model.dto.SectionsDto;
+import com.sergio.bdas2.backend.model.entity.SectionAddressDistrictView;
 import com.sergio.bdas2.backend.repository.SectionsDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class SectionsService {
     private static final Logger logger = LoggerFactory.getLogger(SectionsService.class);
 
 
-    public List<SectionsDto> getAllSections() {
+    public List<SectionAddressDistrictView> getAllSections() {
         return sectionsDao.getAllSections();
     }
 

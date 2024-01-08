@@ -1,4 +1,3 @@
-// SectionsDto.java
 package com.sergio.bdas2.backend.model.dto;
 
 import lombok.AllArgsConstructor;
