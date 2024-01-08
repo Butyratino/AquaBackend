@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -32,63 +33,10 @@ public class UserDao {
         return foundUsers.get(0);
     }
 
-    public User getUserByUsername(String username) {
-        String query = "SELECT * FROM USERS WHERE USERNAME like ?";
-        List<User> foundUsers = jdbcTemplate.query(query, new Object[]{username}, User.getUserMapper());
-        if (foundUsers.size() != 1) {
-            throw new RuntimeException("User with username " + username + " not found");
-        }
-        return foundUsers.get(0);
-    }
-
-    public List<UserDto> getAllUsers() {
-        String query = "SELECT * FROM USER_DETAILS_VIEW ORDER BY ID_USER"; //todo view
-        List<UserDto> foundUsers = jdbcTemplate.query(query, UserDto.getUserDtoMapper());
+    public List<UserDetailsDto> getAllUsers() {
+        String query = "SELECT * FROM USERS ORDER BY USERID";
+        List<UserDetailsDto> foundUsers = jdbcTemplate.query(query, UserDetailsDto.getUserDetailsDtoMapper());
         return foundUsers;
-    }
-    public void updateUserDetails(Integer id, UserDetailsDto userDetails) {
-        String query = "UPDATE CONTACT_DETAILS SET NAME = ?, SURNAME = ?, EMAIL = ?, CITY = ?," + //todo create userdetail table
-                " PHONE_NUMBER = ?, DOCUMENT_NUMBER = ?, IMG = ? WHERE ID_USER = ?";
-        jdbcTemplate.update(query, userDetails.getName(), userDetails.getSurname(), userDetails.getEmail(),
-                userDetails.getCity(), userDetails.getPhoneNumber(), userDetails.getDocumentNumber(), userDetails.getImage(), id);
-    }
-
-    public ResponseEntity<UserDetailsDto> getUserDetailsByUsername(String username) {
-        String query = "SELECT * FROM USER_DETAILS_VIEW WHERE LOGIN like ?"; //todo
-        List<UserDetailsDto> foundUsers = jdbcTemplate.query(query, new Object[]{username}, UserDetailsDto.getMapper());
-        if (foundUsers.size() != 1) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(foundUsers.get(0), HttpStatus.OK);
-    }
-
-    public void addUserDetails(Integer id, UserDetailsDto userDetails) { //todo
-        String query = "insert into contact_details(name, surname, email, city, phone_number, document_number, id_user, img)" +
-                "values(?,?,?,?,?,?,?,?)";
-        jdbcTemplate.update(conn -> {
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, userDetails.getName());
-            ps.setString(2, userDetails.getSurname());
-            ps.setString(3, userDetails.getEmail());
-            ps.setString(4, userDetails.getCity());
-            ps.setString(5, userDetails.getPhoneNumber());
-            ps.setString(6, userDetails.getDocumentNumber());
-            ps.setInt(7, id);
-            ps.setString(8,userDetails.getImage());
-            return ps;
-        });
-    }
-
-    public List<UserDto> changeUserRole(ChangeRoleRequest request) {
-        String query = "UPDATE USERS SET ROLE = ? WHERE USERID = ?";
-        jdbcTemplate.update(query, request.getRole().equals("admin") ? "admin" : "user", request.getIdUser());//todo
-        return getAllUsers();
-    }
-
-    public boolean checkIsUserExistByUsername(String username) {
-        String query = "SELECT * FROM USERS WHERE USERNAME like ?";
-        List<User> foundUsers = jdbcTemplate.query(query, new Object[]{username}, User.getUserMapper());
-        return foundUsers.size() > 0;
     }
 
     public void addNewUser(RegistrationUserRequest user) {
@@ -103,9 +51,79 @@ public class UserDao {
         });
     }
 
-    public void updateUserPicture(Integer id, String picture) {
-        String query = "UPDATE CONTACT_DETAILS SET IMG = ? WHERE USERID = ?";
+    public User getUserByUsername(String username) {
+        String query = "SELECT * FROM USERS WHERE USERNAME like ?";
+        List<User> foundUsers = jdbcTemplate.query(query, new Object[]{username}, User.getUserMapper());
+        if (foundUsers.size() != 1) {
+            throw new RuntimeException("User with username " + username + " not found");
+        }
+        return foundUsers.get(0);
+    }
+
+
+    public void updateUserDetails(Integer id, UserDetailsDto userDetails) {
+        String procedureCall = "{CALL update_user_details (?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+
+        jdbcTemplate.update(
+                procedureCall,
+                id,
+                userDetails.getAvatar(),
+                userDetails.getPassword(),
+                userDetails.getAddressId(),
+                userDetails.getUsername(),
+                userDetails.getPhone(),
+                userDetails.getRole(),
+                userDetails.getHasAvatar(),
+                userDetails.getEmail()
+        );
+    }
+
+
+    public ResponseEntity<UserDetailsDto> getUserDetailsByUsername(String username) {
+        String query = "SELECT * FROM USERS WHERE USERNAME like ?"; //todo
+        List<UserDetailsDto> foundUsers = jdbcTemplate.query(query, new Object[]{username}, UserDetailsDto.getUserDetailsDtoMapper());
+        if (foundUsers.size() != 1) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(foundUsers.get(0), HttpStatus.OK);
+    }
+
+    public void addUserDetails(Integer id, UserDetailsDto userDetails) { //todo
+        String query = "insert into contact_details(name, surname, email, city, phone_number, document_number, id_user, img)" +
+                "values(?,?,?,?,?,?,?,?)";
+        jdbcTemplate.update(conn -> {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, userDetails.getUsername());
+            ps.setString(2, userDetails.getUsername());
+            ps.setString(3, userDetails.getEmail());
+            ps.setString(4, userDetails.getUsername());
+            ps.setString(5, userDetails.getUsername());
+            ps.setString(6, userDetails.getUsername());
+            ps.setInt(7, id);
+            ps.setString(8,userDetails.getUsername());
+            return ps;
+        });
+    }
+
+    public List<UserDetailsDto> changeUserRole(ChangeRoleRequest request) {
+        String query = "UPDATE USERS SET ROLE = ? WHERE USERID = ?";
+        jdbcTemplate.update(query, request.getRole().equals("admin") ? "admin" : "user", request.getIdUser());
+        return getAllUsers();
+    }
+
+    public boolean checkIsUserExistByUsername(String username) {
+        String query = "SELECT * FROM USERS WHERE USERNAME like ?";
+        List<User> foundUsers = jdbcTemplate.query(query, new Object[]{username}, User.getUserMapper());
+        return foundUsers.size() > 0;
+    }
+
+
+
+    public void updateUserPicture(Integer id, byte[] picture) {
+        String query = "UPDATE USERS SET AVATAR = ? WHERE USERID = ?";
         jdbcTemplate.update(query, picture, id);
     }
+
+
 
 }

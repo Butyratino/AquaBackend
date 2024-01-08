@@ -9,31 +9,33 @@ import org.springframework.jdbc.core.RowMapper;
 @NoArgsConstructor
 @Data
 public class UserDetailsDto {
+    private Integer userId;
     private String username;
     private String role;
-    private String name;
-    private String surname;
+    private byte[] avatar;
+    private String password;
+    private Integer addressId;
+    private String phone;
+    private Integer hasAvatar;
     private String email;
-    private String city;
-    private String phoneNumber;
-    private String documentNumber;
-    private String image;
 
     public UserDetailsDto(String username){
         this.username = username;
     }
 
-    public static RowMapper<UserDetailsDto> getMapper() {
+    public static RowMapper<UserDetailsDto> getUserDetailsDtoMapper() {
         return (rs, rowNum) -> {
             UserDetailsDto user = new UserDetailsDto();
+            user.setUserId(rs.getInt("USERID"));
             user.setRole(rs.getString("ROLE"));
             user.setUsername(rs.getString("USERNAME"));
-            user.setName(rs.getString("NAME"));
-            user.setSurname(rs.getString("SURNAME"));
+            user.setAvatar(rs.getBytes("AVATAR"));
+            user.setPassword(rs.getString("PASSWORD"));
+            user.setAddressId(rs.getInt("ADDRESSID"));
+            user.setPhone(rs.getString("PHONE"));
+            user.setHasAvatar(rs.getInt("HASAVATAR"));
             user.setEmail(rs.getString("EMAIL"));
-            user.setImage(rs.getString("IMG"));
             return user;
         };
     }
-
 }

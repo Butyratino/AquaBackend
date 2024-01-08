@@ -27,12 +27,6 @@ public class SectionsController {
     }
 
 
-//    @PutMapping(value = "/update/{id}")
-//    public void updateSection(@PathVariable(value = "id") Integer id, @RequestBody SectionsDto section) {
-//        sectionsService.updateSection(id, section);
-//    }
-
-
     @GetMapping("/{sectionId}")
     public ResponseEntity<SectionsDto> getSectionById(@PathVariable Long sectionId) {
         SectionsDto section = sectionsService.getSectionById(sectionId);
@@ -54,10 +48,10 @@ public class SectionsController {
         return ResponseEntity.ok().allow(HttpMethod.POST).build();
     }
 
-    @PutMapping("/{sectionId}")
-    public ResponseEntity<Void> updateSection(@PathVariable Integer id, @RequestBody SectionsDto section) {
-        section.setSectionId(id);
-        sectionsService.updateSection(id, section);
+    @PutMapping("/update/{sectionId}")
+    public ResponseEntity<Void> updateSection(@PathVariable Integer sectionId, @RequestBody SectionsDto section) {
+        section.setSectionId(sectionId);
+        sectionsService.updateSection(sectionId, section);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -68,6 +62,4 @@ public class SectionsController {
     }
 
 
-
-    // Add other methods as needed
 }

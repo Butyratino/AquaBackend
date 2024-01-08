@@ -7,11 +7,13 @@ import com.sergio.bdas2.backend.model.dto.UserDto;
 import com.sergio.bdas2.backend.model.entity.User;
 import com.sergio.bdas2.backend.repository.UserDao;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class UserService {
         return userDao.getUserById(userId).toUserDto();
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<UserDetailsDto> getAllUsers() {
         return userDao.getAllUsers();
     }
 
@@ -45,8 +47,14 @@ public class UserService {
         return userDao.getUserDetailsByUsername(username);
     }
 
-    public void updateUserPicture(Integer id, String picture) {
-        userDao.updateUserPicture(id, picture);
+    public void updateUserPicture(Integer id, byte[] picture) {
+        try {
+            // Additional business logic, if needed
+            userDao.updateUserPicture(id, picture);
+        } catch (Exception e) {
+            // Log or handle exceptions specific to the service layer
+            throw new ServiceException("Failed to update user picture", e);
+        }
     }
 
     public void updateUserDetails(Integer id, UserDetailsDto userDetails) {
@@ -57,7 +65,23 @@ public class UserService {
     }
 
 
-    public List<UserDto> changeUserRole(ChangeRoleRequest request) {
+    public List<UserDetailsDto> changeUserRole(ChangeRoleRequest request) {
         return userDao.changeUserRole(request);
     }
+
+    public String getUserAvatarUrl(Integer userId) {
+        Optional<User> userOptional = userDao.getUserById(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user.getAvatarUrl();
+        } else {
+            // Handle case when user is not found
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+    }
+
+//    public ResponseEntity<UserDetailsDto> getUserDetailsById(Integer userId) {
+//        return userDao.getUserDetailsById(username);
+//    }
 }

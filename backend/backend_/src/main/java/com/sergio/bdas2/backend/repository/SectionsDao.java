@@ -16,6 +16,17 @@ public class SectionsDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+    public void addSection(SectionsDto section) {
+        String query = "{CALL AddSection(?, ?, ?, ?)}";
+        jdbcTemplate.update(
+                query,
+                section.getName(),
+                section.getDescription(),
+                section.getCapacity(),
+                section.getAddressId()
+        );
+    }
+
     public List<SectionsDto> getAllSections() {
         String query = "SELECT * FROM SECTIONS_VIEW ORDER BY SECTIONID";
         return jdbcTemplate.query(query, SectionsDto.getSectionsDtoMapper());
@@ -31,33 +42,16 @@ public class SectionsDao {
     }
 
     public void updateSection(Integer id, SectionsDto section) {
-        String sql = "UPDATE sections " +
-                "SET name = ?, " +
-                "    description = ?, " +
-                "    capacity = ?, " +
-                "    addressid = ? " +
-                "WHERE sectionid = ?";
-        jdbcTemplate.update(sql, section.getName(), section.getDescription(), section.getCapacity(), section.getAddressId(), id);
+        String sql = "{CALL UpdateSection(?, ?, ?, ?, ?)}";
+        jdbcTemplate.update(sql, id, section.getName(), section.getDescription(), section.getCapacity(), section.getAddressId());
     }
 
-
     public void deleteSection(Integer sectionId) {
-        String query = "DELETE FROM sections WHERE sectionid = ?";
+        String query = "{CALL DeleteSection(?)}";
         jdbcTemplate.update(query, sectionId);
     }
 
-    public void addSection(SectionsDto section) {
-        String query = "INSERT INTO SECTIONS " +
-                "(NAME, DESCRIPTION, CAPACITY, ADDRESSID)" +
-                "VALUES (?,?,?,?)";
-        jdbcTemplate.update(
-                query,
-                section.getName(),
-                section.getDescription(),
-                section.getCapacity(),
-                section.getAddressId()
-        );
-    }
+
 
 }
 

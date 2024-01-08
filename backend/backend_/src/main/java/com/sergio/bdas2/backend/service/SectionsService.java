@@ -28,7 +28,6 @@ public class SectionsService {
     }
 
     public void updateSection(Integer id, SectionsDto section) {
-        // Implement logic to update section in the database
         sectionsDao.updateSection(id, section);
     }
 

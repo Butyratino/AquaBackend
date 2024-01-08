@@ -53,6 +53,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String ADMIN_ENDPOINT = "/api/user/**";
     private static final String LOGIN_ENDPOINT = "/api/auth/**";
     private static final String SECTIONS_ENDPOINT = "/api/sections/**";
+    private static final String ADDITIONALSERVICES_ENDPOINT = "/api/addservices/**";
+    private static final String ATTRACTIONS_ENDPOINT = "/api/attractions/**";
+    private static final String USERS_ENDPOINT = "/api/profile/**";
+    private static final String TICKETS_ENDPOINT = "/api/tickets/**";
+    private static final String PAYMENTS_ENDPOINT = "/api/payments/**";
+    private static final String EMPLOYEES_ENDPOINT = "/api/employees/**";
+    private static final String SCHEDULES_ENDPOINT = "/api/schedules/**";
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -74,6 +81,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS, "/api/sections/add").permitAll()
                 .antMatchers(LOGIN_ENDPOINT).permitAll()
                 .antMatchers(SECTIONS_ENDPOINT).permitAll()
+                .antMatchers(ADDITIONALSERVICES_ENDPOINT).permitAll()
+                .antMatchers(ATTRACTIONS_ENDPOINT).permitAll()
+                .antMatchers(USERS_ENDPOINT).permitAll()
+                .antMatchers(TICKETS_ENDPOINT).permitAll()
+                .antMatchers(PAYMENTS_ENDPOINT).permitAll()
+                .antMatchers(EMPLOYEES_ENDPOINT).permitAll()
+                .antMatchers(SCHEDULES_ENDPOINT).permitAll()
                 .antMatchers(ADMIN_ENDPOINT).hasRole("admin") // todo: check User implements UserDetails
                 .anyRequest().authenticated();
 
